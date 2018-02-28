@@ -1,18 +1,17 @@
 Milestones: MVP
 ---------------
 
-Implement a core Racket library to fire individual keyboard events on Linux-based operating systems. (This will likely require use of Racket's FFI to interface with the `uinput` kernel module.)
+Implement a Racket library to fire individual keyboard events on Linux-based operating systems. (This will likely require use of Racket's FFI to interface with the `uinput` kernel module.)
 
-Implement a notion of combos in the Racket library, allowing for sequences of keyboard events to be fired with specific timings.
+Extend the library to allow for sequences of keyboard events to be fired with specific timings.
 
-Implement game schemas. Allow buttons and directions defined in the Yomi language to resolve to keyboard events in the Racket library. Define a schema for Skullgirls.
+Implement game schemas, allowing for buttons and directions to be used in input sequences instead of literal key presses. Define a schema for Skullgirls, our target game.
 
-Implement basic combos in the Yomi language using game schemas. Allow combos written using Yomi buttons and directions to resolve to a sequence of keyboard events in the Racket library. (Thes e inpiuts will likely be performed at a fixed interval, since frame data is not defined in the game schema.)
- 
-Implement character schemas where a character's moves and frame data properties can be defined. Define a schema for Filia.
+Implement character schemas where a character's moves and frame data properties can be defined. Define a schema for Filia (a playable character in Skullgirls).
 
-Update Yomi combos to use character schemas and infer timings based on defined frame data properties.
+Implement basic combos in the Yomi eDSL that can be written using constructs defined in game/character schemas. Combos should be able to be executed by the base Racket library. (At this point in time, we are not concerned about getting input timings working.)
 
+Improve the Yomi combo eDSL to support links and cancels, so inputs can be performed with specific timings.
 
 Milestones: Next steps
 ----------------------
