@@ -11,11 +11,12 @@ Grammar
     Button ::= <Symbol>
 
     ButtonSeq ::= <Button>[(<Nat>)]
-                | <Button> + <ButtonSeq>
+                | <Button>+<ButtonSeq>
 
     Move ::= [<Prefix>][<DirectionSeq>]<ButtonSeq>
 
     ComboSeq ::= <DirectionSeq>[<ComboSeq>]
                | <Move> [<LinkOrCancel> <ComboSeq>]
 
-    LinkOrCancel ::= , | >
+    LinkOrCancel ::= ,
+                   | >
