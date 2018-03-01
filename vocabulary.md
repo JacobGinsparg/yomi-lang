@@ -42,7 +42,7 @@ The _direction sequence_ is an optional sequence of directions that will be perf
 The _button combination_ is a combination of buttons that will be performed simultaneously. Each button must be separated by a +. If the button combination must be held for some interval, the interval can be specified (in frames) by wrapping it parenthesis after the whole button sequence.
 
 Some example moves:
-- j.236K: Assumed to be in the air, input directions down, down-forward, and forward, then press the K button
-- 623HP+HK: Input directions forward, down, and down-forward, then press the HP and HP buttons simultaneously
-- 4(30)6HP: Input direction back for 30 frames, then input direction forward and press the HP buton
-- j.HK: Assumed to be in the air, press the HK button (no direction, equivalent to "j.5HK")
+- `j.236K`: Assumed to be in the air, input directions down, down-forward, and forward, then press the K button
+- `623HP+HK`: Input directions forward, down, and down-forward, then press the HP and HP buttons simultaneously
+- `4(30)6HP`: Input direction back for 30 frames, then input direction forward and press the HP buton
+- `j.HK`: Assumed to be in the air, press the HK button (no direction, equivalent to "j.5HK")
