@@ -25,9 +25,9 @@ A _game schema_ is a namespace that defines buttons for a specific game. Moves a
 
 A _character schema_ is a namespace that defines moves and names for a specific character in a specific game. A character schema must be within the scope of a game schema.
 
-A _link_ is when a move is performed after the previous move's recovery state completes. We infer that the move should be performed on the first frame after recovery, but the delay can be manually specified.
+A _link_ is when a move is performed after the previous move's recovery state completes. We infer that the move should be performed on the first frame after recovery. In our grammar, a link is specified by the `,` character.
 
-A _cancel_ is when a move is performed after the previous move's active state completes, but is still in recovery. We infer that the move should be performed on the first frame of recovery, but the delay can be manually specified.
+A _cancel_ is when a move is performed after the previous move's active state completes, but is still in recovery. We infer that the move should be performed on the first frame of recovery. In our grammar, a cancel is specified by the `>` character.
 
 
 Anatomy of a move
@@ -39,7 +39,7 @@ The _prefix_ is an optional piece at the beginning of the move used to different
 
 The _direction sequence_ is an optional sequence of directions that will be performed one at a time in order from left to right. If a direction needs to be held for some interval before inputting the next direction, the length of the interval (in frames) can be specified by wrapping it in parenthesis after the individual direction. If the direction sequence is not specified, we infer that the direction is 5 (neutral/none).
 
-The _button combination_ is a combination of buttons that will be performed simultaneously. Each button must be separated by a +. If the button combination must be held for some interval, the interval can be specified (in frames) by wrapping it parenthesis after the whole button sequence.
+The _button sequence_ is a combination of buttons that will be performed simultaneously. Each button must be separated by a +. If the button combination must be held for some interval, the interval can be specified (in frames) by wrapping it parenthesis after the whole button sequence.
 
 Some example moves:
 - `j.236K`: Assumed to be in the air, input directions down, down-forward, and forward, then press the K button
