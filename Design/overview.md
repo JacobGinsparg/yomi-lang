@@ -1,0 +1,10 @@
+Project overview
+----------------
+
+Our domain of interest is the “fighting” video game genre. In a traditional fighting game, two players each control a character on a 2D plane. The goal is to reduce your opponent’s life bar to zero by attacking them. When a character is hit with an attack, they are put into a stunned state. While in stun, the character cannot perform most actions, such as moving, blocking, and counterattacking. While the character is stunned, it is possible to hit them with an additional attack, increasing the stun duration and allowing for even more attacks. This is called a combo: a sequence of attacks in which the target character never leaves the stunned state. Combos form the backbone of offense in fighting games.
+
+Players spend a considerable amount of time practicing and creating combos.  Most games provide a training mode for these purposes, but these tools are not always enough. Combos require tight execution of inputs, sometimes with precision of one-sixtieth of a second. Situations can be difficult to reproduce when a human player needs to perform these inputs flawlessly every time. Why not supplement the in-game training mode with an external, tool-assisted solution for automating inputs?
+
+There are already plenty of tools for scripting inputs on computers, such as AutoHotkey for Windows. However, the “languages” of these tools tend to focus on primitive key presses and mouse movements. There is no context regarding what these inputs mean. The player will need to constantly translate between which keys on the keyboard correspond to which attacks in the game. Furthermore, some attacks require multiple inputs, which are tedious to write.
+
+Fighting game players already have some general conventions for writing down combos. Our goal is to make a domain-specific language for scripting fighting game inputs that is as close as possible to the conventions already used by players.
