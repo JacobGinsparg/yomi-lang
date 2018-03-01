@@ -15,7 +15,7 @@ Grammar
 
     Move ::= [<Prefix>][<DirectionSeq>]<ButtonSeq>
 
-    ComboSeq ::= <DirectionSeq>[<ComboSeq>]
+    ComboSeq ::= <DirectionSeq> [<ComboSeq>]
                | <Move> [<LinkOrCancel> <ComboSeq>]
 
     LinkOrCancel ::= ,
