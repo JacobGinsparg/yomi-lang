@@ -1,5 +1,5 @@
 Grammar
-----------
+-------
 
     Prefix ::= <Symbol>.
 
