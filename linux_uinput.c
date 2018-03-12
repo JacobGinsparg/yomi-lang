@@ -31,7 +31,6 @@ int setup_uinput_device()
 	ioctl(fd, UI_SET_KEYBIT, KEY_I);
 	ioctl(fd, UI_SET_KEYBIT, KEY_O);
 	ioctl(fd, UI_SET_KEYBIT, KEY_P);
-	ioctl(fd, UI_SET_KEYBIT, KEY_P);
 	// Event codes 103, 105, 106, 107
 	ioctl(fd, UI_SET_KEYBIT, KEY_UP);
 	ioctl(fd, UI_SET_KEYBIT, KEY_LEFT);
