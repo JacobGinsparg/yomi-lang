@@ -88,10 +88,9 @@
 ; press: . Input -> Void
 ; Instantaneously hold and release the given Inputs
 (define (press . inputs)
-  (when (< fd 0)
-    (error 'press "uinput device not initialized"))
+  (error-if-uninitialized 'press)
   (if (empty? inputs)
-      (error 'press "no keys given")
+      (error 'press "no inputs given")
       (let ([keys (map input->key inputs)])
         (for-each (lambda (k) (emit fd EV-KEY k 1)) keys)
         (for-each (lambda (k) (emit fd EV-KEY k 0)) keys)
@@ -100,10 +99,9 @@
 ; hold: . Input -> Void
 ; Start holding all of the given Inputs
 (define (hold . inputs)
-  (when (< fd 0)
-    (error 'press "uinput device not initialized"))
+  (error-if-uninitialized 'hold)
   (if (empty? inputs)
-      (error 'press "no keys given")
+      (error 'press "no inputs given")
       (let ([keys (map input->key inputs)])
         (for-each (lambda (k) (emit fd EV-KEY k 1)) keys)
         (emit fd EV-SYN SYN-REPORT 0))))
@@ -111,10 +109,9 @@
 ; release: . Input -> Void
 ; Release all of the given Inputs
 (define (release . inputs)
-  (when (< fd 0)
-    (error 'press "uinput device not initialized"))
+  (error-if-uninitialized 'release)
   (if (empty? inputs)
-      (error 'press "no keys given")
+      (error 'press "no inputs given")
       (let ([keys (map input->key inputs)])
         (for-each (lambda (k) (emit fd EV-KEY k 0)) keys)
         (emit fd EV-SYN SYN-REPORT 0))))
@@ -122,11 +119,17 @@
 ; teardown: Void -> Void
 ; Removes the uinput device and closes the file descriptor
 (define (teardown)
-  (when (< fd 0)
-    (error 'press "uinput device not initialized"))
+  (error-if-uninitialized 'teardown)
   (teardown_uinput_device fd)
   (set! fd -1))
+
+; error-if-uninitialized: Symbol -> Void
+; Throw an error if the uinput device isn't running
+(define (error-if-uninitialized sym)
+  (when (< fd 0)
+    (error sym "uinput device not initialized")))
 
 ; input->key: Input -> EventCode
 ; Return the kernel input event code that corresponds to the given Input
 (define (input->key i)
+  (hash-ref INPUT-KEY-MAPPING i))
