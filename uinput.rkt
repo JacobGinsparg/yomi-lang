@@ -89,32 +89,29 @@
 ; Instantaneously hold and release the given Inputs
 (define (press . inputs)
   (error-if-uninitialized 'press)
-  (if (empty? inputs)
-      (error 'press "no inputs given")
-      (let ([keys (map input->key inputs)])
-        (for-each (lambda (k) (emit fd EV-KEY k 1)) keys)
-        (for-each (lambda (k) (emit fd EV-KEY k 0)) keys)
-        (emit fd EV-SYN SYN-REPORT 0))))
+  (error-if-empty 'press inputs)
+  (let ([keys (map input->key inputs)])
+    (for-each (lambda (k) (emit fd EV-KEY k 1)) keys)
+    (for-each (lambda (k) (emit fd EV-KEY k 0)) keys)
+    (emit fd EV-SYN SYN-REPORT 0)))
 
 ; hold: . Input -> Void
 ; Start holding all of the given Inputs
 (define (hold . inputs)
   (error-if-uninitialized 'hold)
-  (if (empty? inputs)
-      (error 'hold "no inputs given")
-      (let ([keys (map input->key inputs)])
-        (for-each (lambda (k) (emit fd EV-KEY k 1)) keys)
-        (emit fd EV-SYN SYN-REPORT 0))))
+  (error-if-empty 'hold inputs)
+  (let ([keys (map input->key inputs)])
+    (for-each (lambda (k) (emit fd EV-KEY k 1)) keys)
+    (emit fd EV-SYN SYN-REPORT 0)))
 
 ; release: . Input -> Void
 ; Release all of the given Inputs
 (define (release . inputs)
   (error-if-uninitialized 'release)
-  (if (empty? inputs)
-      (error 'release "no inputs given")
-      (let ([keys (map input->key inputs)])
-        (for-each (lambda (k) (emit fd EV-KEY k 0)) keys)
-        (emit fd EV-SYN SYN-REPORT 0))))
+  (error-if-empty 'release inputs)
+  (let ([keys (map input->key inputs)])
+    (for-each (lambda (k) (emit fd EV-KEY k 0)) keys)
+    (emit fd EV-SYN SYN-REPORT 0)))
 
 ; teardown: Void -> Void
 ; Removes the uinput device and closes the file descriptor
@@ -123,11 +120,17 @@
   (teardown_uinput_device fd)
   (set! fd -1))
 
+; error-if-empty: Symbol [Listof Input] -> Void
+; Throw an error if there are no inputs
+(define (error-if-empty sym inputs)
+  (when (empty? inputs)
+    (error sym "no inputs given")))
+
 ; error-if-uninitialized: Symbol -> Void
 ; Throw an error if the uinput device isn't running
 (define (error-if-uninitialized sym)
   (when (< fd 0)
-    (error sym "uinput device not initialized")))
+    (error sym "device not initialized; run setup")))
 
 ; input->key: Input -> EventCode
 ; Return the kernel input event code that corresponds to the given Input
