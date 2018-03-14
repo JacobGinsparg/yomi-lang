@@ -32,13 +32,16 @@ A Button is one of the following Symbols:
 A Direction is one of the following Symbols:
 - 'up
 - 'down
-- 'left
-- 'right
+- 'back
+- 'forward
 ```
 
 The intention is that buttons `'b1` through `'b8` will be used for in-game
 actions (i.e. six attacks plus two macros), while `'start` and `'select` will
 be used for UI functions like pausing, resetting save states, etc.
+
+Note that directions are relative to the player 1 side. In numpad notation,
+back is 4 and forward is 6.
 
 
 Functions

@@ -63,20 +63,20 @@
 
 (define INPUT-KEY-MAPPING
   (hash
-   'b1     KEY-Q
-   'b2     KEY-W
-   'b3     KEY-E
-   'b4     KEY-R
-   'b5     KEY-T
-   'b6     KEY-Y
-   'b7     KEY-U
-   'b8     KEY-I
-   'start  KEY-O
-   'select KEY-P
-   'up     KEY-UP
-   'down   KEY-DOWN
-   'left   KEY-LEFT
-   'right  KEY-RIGHT))
+   'b1       KEY-Q
+   'b2       KEY-W
+   'b3       KEY-E
+   'b4       KEY-R
+   'b5       KEY-T
+   'b6       KEY-Y
+   'b7       KEY-U
+   'b8       KEY-I
+   'start    KEY-O
+   'select   KEY-P
+   'up       KEY-UP
+   'down     KEY-DOWN
+   'back     KEY-LEFT
+   'forward  KEY-RIGHT))
 
 ; setup: Void -> Void
 ; Initializes the uinput device and sets up the file descriptor
