@@ -7,7 +7,11 @@
          hold
          release
          teardown
-         received-inputs)
+         received-inputs
+         is-set-up
+         make-event
+         event-state
+         event-inputs)
 
 
 ; fired-inputs is a list of InputEvent that can be viewed for testing purposes.
@@ -42,10 +46,9 @@
   (set! received-inputs (append received-inputs (list (make-event 'release inputs)))))
 
 (define (teardown)
-  (if is-set-up
-      (begin (set! received-inputs '())
-             (set! is-set-up #f))
-      (error-if-uninitialized 'teardown)))
+  (error-if-uninitialized 'teardown)
+  (set! received-inputs '())
+  (set! is-set-up #f))
 
 (define (error-if-uninitialized sym)
   (when (not is-set-up)
