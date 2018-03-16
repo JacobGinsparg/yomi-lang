@@ -8,7 +8,8 @@ the schema/language level.
 
 #lang racket
 
-(require "yomi-lib.rkt")
+(require "../lib/yomi-lib.rkt"
+         "../lib/uinput.rkt")
 
 
 ; Skullgirls game schema
