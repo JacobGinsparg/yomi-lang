@@ -14,17 +14,11 @@ List of problems I can think of with this implementation:
 #lang racket
 
 ; TODO: make this configurable and/or platform-specific
-(require "uinput.rkt")
 (provide make-move
          link
          cancel
          perform-combo
-         perform-move
-         setup
-         teardown
-         press
-         hold
-         release)
+         perform-move)
 
 
 ; A Move is a (make-move InputSeq Integer Integer Integer Integer)
