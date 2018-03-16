@@ -3,3 +3,6 @@ main: lib/linux_uinput.o
 
 lib/linux_uinput.o: lib/linux_uinput.c
 	gcc -c -fPIC -o lib/linux_uinput.o lib/linux_uinput.c
+
+drracket:
+	@ LD_LIBRARY_PATH=lib nohup drracket > /dev/null 2>&1 &
