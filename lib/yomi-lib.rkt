@@ -4,21 +4,19 @@
 List of problems I can think of with this implementation:
 - Does not support direction sequences in combos, preventing charge buffers,
   jumping/moving, etc.
-- Heavily tied to Linux-specific uinput code. We want something more like
-  "require whatever module implements the virtual device interface for this
-  platform".
 - Constantly having to pass the tick rate to functions is a pain and I'm a bit
   uncertain how you'd write a move with charge inputs.
 |#
 
 #lang racket
 
-; TODO: make this configurable and/or platform-specific
 (provide make-move
+         make-delay
          link
          cancel
          perform-combo
-         perform-move)
+         perform-move
+         frames->seconds)
 
 
 ; A Move is a (make-move InputSeq Integer Integer Integer Integer)
@@ -30,7 +28,9 @@ List of problems I can think of with this implementation:
 
 ; A Combo is a [Listof (U Move Delay)]
 
-; A Delay is a thunk function that waits for some particular amount of time
+; A Delay is a (make-delay Number) that signifies a pause before executing the
+; next input
+(define-struct delay (seconds) #:transparent)
 
 ; ------------------------------------------------------------------------------
 
@@ -42,19 +42,19 @@ List of problems I can think of with this implementation:
   (/ frames tick-rate))
 
 ; link: Move Integer -> Delay
-; Produces a thunk that will sleep until the end of the given move's recovery
+; Create a delay that lasts until the end of the given move's recovery
 (define (link m tick-rate)
-  (lambda () (sleep (frames->seconds (+ (move-startup m)
-                                        (move-hitstun m)
-                                        (move-recovery m))
-                                     tick-rate))))
+  (make-delay (frames->seconds (+ (move-startup m)
+                                  (move-hitstun m)
+                                  (move-recovery m))
+                               tick-rate)))
 
 ; cancel: Move Integer -> Delay
-; Produces a thunk that will sleep until the end of the given move's hitstun
+; Create a delay that lasts until the end of the given move's hitstun
 (define (cancel m tick-rate)
-  (lambda () (sleep (frames->seconds (+ (move-startup m)
-                                        (move-hitstun m))
-                                     tick-rate))))
+  (make-delay (frames->seconds (+ (move-startup m)
+                                  (move-hitstun m))
+                               tick-rate)))
 
 ; ------------------------------------------------------------------------------
 
@@ -66,8 +66,9 @@ List of problems I can think of with this implementation:
   (cond [(empty? combo) (void)]
         [(move? (first combo)) (begin (perform-move (first combo))
                                       (perform-combo (rest combo)))]
-        [else (begin ((first combo))
-                     (perform-combo (rest combo)))]))
+        [(delay? (first combo)) (begin (sleep (delay-seconds (first combo)))
+                                       (perform-combo (rest combo)))]
+        [else (error 'perform-combo "invalid combo")]))
 
 ; perform-move: Move -> Void
 ; Execute the given move on the virtual input device.
