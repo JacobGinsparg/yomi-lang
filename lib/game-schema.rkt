@@ -16,7 +16,9 @@
 (define TICK-RATE 60)
 |#
 
-(provide define-game)
+(provide define-game
+         buttons
+         tick-rate)
 
 (require (for-syntax syntax/parse
                      racket))
