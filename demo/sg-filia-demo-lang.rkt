@@ -1,4 +1,4 @@
-; Demonstration of how to use Yomi at the library level.
+; Demonstration of how to use Yomi at the language level.
 
 #|
 You'll notice a lot of patterns and repetitions in this code. That's sort of
@@ -18,6 +18,8 @@ the schema/language level.
 (define-game skullgirls
   [buttons LP MP HP LK MK HK]
   [tick-rate 60])
+
+(require (submod "." skullgirls))
 
 ; ------------------------------------------------------------------------------
 
