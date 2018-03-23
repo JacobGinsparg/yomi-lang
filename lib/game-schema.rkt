@@ -60,6 +60,21 @@
         (set! buttons-remaining (rest buttons-remaining))
         next-button)))
 
-(define-game skullgirls
-  [buttons LP MP]
-  [tick-rate 60])
+
+(module+ test
+  (require (for-syntax rackunit))
+  (define-syntax check-def-failure
+    (syntax-parser
+      [(_ def msg)
+       (check-exn (regexp (syntax->datum #'msg))
+                  (lambda () (local-expand #'def 'module-begin null)))
+       #'(void)]))
+
+  (check-def-failure (define-game skullgirls
+                       [buttons LP MP HP LK MK HK LP]
+                       [tick-rate 60])
+                     "Duplicate button declared")
+  (check-def-failure (define-game skullgirls
+                       [buttons LP MP HP LK MK HK a b c d e]
+                       [tick-rate 60])
+                     "Can only define"))
