@@ -1,21 +1,5 @@
 #lang racket
 
-#|
-(define-game skullgirls
-  [buttons LP MP ...]
-  [tick-rate 60])
-
-
-(define LP 'b1)
-(define MP 'b2)
-(define HP 'b3)
-(define LK 'b4)
-(define MK 'b5)
-(define HK 'b6)
-
-(define TICK-RATE 60)
-|#
-
 (provide define-game
          buttons
          tick-rate)
@@ -26,7 +10,9 @@
 (define buttons   0)
 (define tick-rate 1)
 
-(define-for-syntax button-length 8 #|(length buttons-remaining)|#)
+;; Length of the buttons-remaining list,
+;; hardcoded due to phasing conflict
+(define-for-syntax button-length 8)
 
 (define-syntax define-game
   (syntax-parser
