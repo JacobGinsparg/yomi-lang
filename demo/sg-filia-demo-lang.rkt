@@ -1,9 +1,9 @@
 ; Demonstration of how to use Yomi at the language level.
 
 #|
-You'll notice a lot of patterns and repetitions in this code. That's sort of
-intentional; I hope that it surfaces areas for improvement that we can solve at
-the schema/language level.
+Functionally, this should mirror the library demo, but use the briefer syntax
+provided by the language. It should be revised as more language features are
+built out.
 |#
 
 #lang racket
