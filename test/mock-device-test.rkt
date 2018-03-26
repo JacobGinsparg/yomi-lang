@@ -1,14 +1,8 @@
 #lang racket
 
 (require rackunit
+         "helpers.rkt"
          "../lib/mock-device.rkt")
-
-(define (ensure-setup)
-  (when is-set-up (teardown))
-  (setup))
-
-(define (ensure-teardown)
-  (when is-set-up (teardown)))
 
 (test-case
  "setup"
@@ -29,46 +23,46 @@
 
 (test-case
  "single presses"
- (ensure-setup)
- (press 'b1)
- (check-equal? (make-event 'hold '(b1)) (first received-inputs)
-               "fires a hold event")
- (check-equal? (make-event 'release '(b1)) (last received-inputs)
-               "fires a release event immediately after the hold"))
+ (with-mock-device
+   (press 'b1)
+   (check-equal? (make-event 'hold '(b1)) (first received-inputs)
+                 "fires a hold event")
+   (check-equal? (make-event 'release '(b1)) (last received-inputs)
+                 "fires a release event immediately after the hold")))
 
 (test-case
  "multiple presses"
- (ensure-setup)
- (press 'b1 'b2)
- (check-equal? (make-event 'hold '(b1 b2)) (first received-inputs)
-               "fires a hold event")
- (check-equal? (make-event 'release '(b1 b2)) (last received-inputs)
-               "fires a release event immediately after the hold"))
+ (with-mock-device
+   (press 'b1 'b2)
+   (check-equal? (make-event 'hold '(b1 b2)) (first received-inputs)
+                 "fires a hold event")
+   (check-equal? (make-event 'release '(b1 b2)) (last received-inputs)
+                 "fires a release event immediately after the hold")))
 
 (test-case
  "single holds"
- (ensure-setup)
- (hold 'b1)
- (check-equal? (make-event 'hold '(b1)) (first received-inputs)
-               "fires a hold event"))
+ (with-mock-device
+   (hold 'b1)
+   (check-equal? (make-event 'hold '(b1)) (first received-inputs)
+                 "fires a hold event")))
 
 (test-case
  "multiple holds"
- (ensure-setup)
- (hold 'b1 'b2)
- (check-equal? (make-event 'hold '(b1 b2)) (first received-inputs)
-               "fires a hold event"))
+ (with-mock-device
+   (hold 'b1 'b2)
+   (check-equal? (make-event 'hold '(b1 b2)) (first received-inputs)
+                 "fires a hold event")))
 
 (test-case
  "single release"
- (ensure-setup)
- (release 'b1)
- (check-equal? (make-event 'release '(b1)) (first received-inputs)
-               "fires a release event"))
+ (with-mock-device
+   (release 'b1)
+   (check-equal? (make-event 'release '(b1)) (first received-inputs)
+                 "fires a release event")))
 
 (test-case
  "multiple releases"
- (ensure-setup)
- (release 'b1 'b2)
- (check-equal? (make-event 'release '(b1 b2)) (first received-inputs)
-               "fires a release event"))
+ (with-mock-device
+   (release 'b1 'b2)
+   (check-equal? (make-event 'release '(b1 b2)) (first received-inputs)
+                 "fires a release event")))
