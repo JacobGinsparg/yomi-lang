@@ -5,7 +5,8 @@
          tick-rate
          move)
 
-(require (for-syntax syntax/parse
+(require "./yomi-lib.rkt"
+         (for-syntax syntax/parse
                      racket))
 
 (define buttons   0)
@@ -81,12 +82,12 @@
 ;; build-direction-commands : String -> [Listof Sexpr]
 (define-for-syntax (build-direction-commands dir-string)
   (define (build-dir-execution dir)
-    `(press @,(hash-ref direction-table dir)))
+    `(press ,@(hash-ref direction-table dir)))
   (map build-dir-execution (regexp-match* dir-regex dir-string)))
 
 ;; build-button-commands : String -> [Listof Sexpr]
 (define-for-syntax (build-button-commands button-string)
-  (list `(press @,(map string->symbol (string-split button-string "+")))))
+  (list `(press ,@(map string->symbol (string-split button-string "+")))))
 
 ;; validate-buttons : [Listof Symbol] -> Void
 (define-for-syntax (validate-buttons btn-list)
