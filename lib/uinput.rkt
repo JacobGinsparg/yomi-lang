@@ -89,7 +89,6 @@
 ; Instantaneously hold and release the given Inputs
 (define (press . inputs)
   (error-if-uninitialized 'press)
-  (error-if-empty 'press inputs)
   (let ([keys (map input->key inputs)])
     (for-each (lambda (k) (emit fd EV-KEY k 1)) keys)
     (for-each (lambda (k) (emit fd EV-KEY k 0)) keys)
@@ -99,7 +98,6 @@
 ; Start holding all of the given Inputs
 (define (hold . inputs)
   (error-if-uninitialized 'hold)
-  (error-if-empty 'hold inputs)
   (let ([keys (map input->key inputs)])
     (for-each (lambda (k) (emit fd EV-KEY k 1)) keys)
     (emit fd EV-SYN SYN-REPORT 0)))
@@ -108,7 +106,6 @@
 ; Release all of the given Inputs
 (define (release . inputs)
   (error-if-uninitialized 'release)
-  (error-if-empty 'release inputs)
   (let ([keys (map input->key inputs)])
     (for-each (lambda (k) (emit fd EV-KEY k 0)) keys)
     (emit fd EV-SYN SYN-REPORT 0)))
@@ -119,12 +116,6 @@
   (error-if-uninitialized 'teardown)
   (teardown_uinput_device fd)
   (set! fd -1))
-
-; error-if-empty: Symbol [Listof Input] -> Void
-; Throw an error if there are no inputs
-(define (error-if-empty sym inputs)
-  (when (empty? inputs)
-    (error sym "no inputs given")))
 
 ; error-if-uninitialized: Symbol -> Void
 ; Throw an error if the uinput device isn't running
