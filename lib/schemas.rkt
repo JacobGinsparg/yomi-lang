@@ -33,6 +33,8 @@
 ;; hardcoded due to phasing conflict
 (define-for-syntax button-length 8)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GAME SCHEMA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define-syntax define-game
   (syntax-parser
     #:literals (buttons tick-rate)
@@ -56,6 +58,19 @@
                  next-button)))
          (define #,tr-id tix)
          (define btn (allocate-button)) ...)]))
+
+;; validate-buttons : [Listof Symbol] -> Void
+(define-for-syntax (validate-buttons btn-list)
+  (let ([seen (mutable-set)])
+    (for-each (lambda (btn)
+                (if (set-member? seen btn)
+                    (error 'define-game "Duplicate button declared: ~s" btn)
+                    (set-add! seen btn)))
+              btn-list)
+    (when (> (length btn-list) button-length)
+      (error 'define-game "Can only define ~s buttons, ~s declared" button-length (length btn-list)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CHARACTER SCHEMA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #;(define-syntax define-character
   (syntax-parser
@@ -82,20 +97,9 @@
 ;; build-direction-commands : String -> [Listof Sexpr]
 (define-for-syntax (build-direction-commands dir-string)
   (define (build-dir-execution dir)
-    `(press ,@(hash-ref direction-table dir)))
+    `(press ,@(map (lambda (d) `(quote ,d)) (hash-ref direction-table dir))))
   (map build-dir-execution (regexp-match* dir-regex dir-string)))
 
 ;; build-button-commands : String -> [Listof Sexpr]
 (define-for-syntax (build-button-commands button-string)
   (list `(press ,@(map string->symbol (string-split button-string "+")))))
-
-;; validate-buttons : [Listof Symbol] -> Void
-(define-for-syntax (validate-buttons btn-list)
-  (let ([seen (mutable-set)])
-    (for-each (lambda (btn)
-                (if (set-member? seen btn)
-                    (error 'define-game "Duplicate button declared: ~s" btn)
-                    (set-add! seen btn)))
-              btn-list)
-    (when (> (length btn-list) button-length)
-      (error 'define-game "Can only define ~s buttons, ~s declared" button-length (length btn-list)))))
