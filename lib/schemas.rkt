@@ -89,20 +89,29 @@
   (let ([parsed-move (regexp-match move-regex move-str)])
     (unless parsed-move
       (error 'define-character "Bad move format"))
-    (let ([prefix (second parsed-move)]
-          [directions (third parsed-move)]
-          [buttons (fourth parsed-move)])
-      `(lambda () ,@(build-direction-commands directions) ,@(build-button-commands buttons)))))
+    (match-define (list _ prefix directions buttons) parsed-move)
+    (let ([directions (explode-directions directions)]
+          [buttons (explode-buttons buttons)])
+      (cond [(empty? directions) `(lambda () ,(build-press buttons))]
+            [else
+             (begin (define-values (first-directions last-direction) (split-at-right directions 1))
+                    `(lambda ()
+                       ,@(map build-press first-directions)
+                       ,(build-press (append (first last-direction) buttons))))]))))
 
-;; build-direction-commands : String -> [Listof Sexpr]
-(define-for-syntax (build-direction-commands dir-string)
-  (define (build-dir-execution dir)
-    `(press ,@(map (lambda (d) `(quote ,d)) (hash-ref direction-table dir))))
+;; explode-directions : String -> [Listof [Listof Symbol]]
+(define-for-syntax (explode-directions dir-string)
+  (define (build-dir-list dir)
+    (map (lambda (d) `(quote ,d)) (hash-ref direction-table dir)))
   (if (not dir-string)
       '()
-      (map build-dir-execution (regexp-match* dir-regex dir-string))))
+      (map build-dir-list (regexp-match* dir-regex dir-string))))
 
-;; build-button-commands : String -> [Listof Sexpr]
-(define-for-syntax (build-button-commands button-string)
-  (list `(press ,@(map (lambda (b) (string->symbol (string-append "button:" b)))
-                       (string-split button-string "+")))))
+;; explode-buttons : String -> [Listof Symbol]
+(define-for-syntax (explode-buttons button-string)
+  (map (lambda (b) (string->symbol (string-append "button:" b)))
+       (string-split button-string "+")))
+
+;; build-press : [Listof Symbol] -> Sexpr
+(define-for-syntax (build-press cmds)
+  `(press ,@cmds))
