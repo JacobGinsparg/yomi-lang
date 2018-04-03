@@ -3,7 +3,7 @@
 (require (for-syntax rackunit
                      syntax/parse)
          rackunit
-         "../lib/game-schema.rkt")
+         "../lib/schemas.rkt")
 
 ; Expand the macro and assert that it fails with the given message
 (define-syntax check-def-failure
@@ -21,7 +21,15 @@
 
 (test-case
  "declaring buttons"
- (check-equal? (list a b c d e f g h) '(b1 b2 b3 b4 b5 b6 b7 b8)))
+ (check-equal? (list button:a
+                     button:b
+                     button:c
+                     button:d
+                     button:e
+                     button:f
+                     button:g
+                     button:h)
+               '(b1 b2 b3 b4 b5 b6 b7 b8)))
 
 (test-case
  "declaring tick rate"
