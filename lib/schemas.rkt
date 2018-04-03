@@ -48,7 +48,7 @@
      (define tr-id (datum->syntax #'name 'TICK-RATE))
      #`(module name r
          (req racket)
-         (provide #,tr-id btn ...)
+         (provide #,tr-id (prefix-out button: btn) ...)
          (define buttons-remaining '(b1 b2 b3 b4 b5 b6 b7 b8))
          (define (allocate-button)
            (if (empty? buttons-remaining)
@@ -98,8 +98,11 @@
 (define-for-syntax (build-direction-commands dir-string)
   (define (build-dir-execution dir)
     `(press ,@(map (lambda (d) `(quote ,d)) (hash-ref direction-table dir))))
-  (map build-dir-execution (regexp-match* dir-regex dir-string)))
+  (if (not dir-string)
+      '()
+      (map build-dir-execution (regexp-match* dir-regex dir-string))))
 
 ;; build-button-commands : String -> [Listof Sexpr]
 (define-for-syntax (build-button-commands button-string)
-  (list `(press ,@(map string->symbol (string-split button-string "+")))))
+  (list `(press ,@(map (lambda (b) (string->symbol (string-append "button:" b)))
+                       (string-split button-string "+")))))

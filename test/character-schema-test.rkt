@@ -2,7 +2,9 @@
 
 (require rackunit
          "../lib/yomi-lib.rkt"
-         "../lib/mock-device.rkt")
+         "../lib/mock-device.rkt"
+         "../lib/schemas.rkt"
+         "helpers.rkt")
 (require (for-syntax syntax/parse))
 
 ; Happy cases
@@ -10,55 +12,47 @@
 (define-game some-game
   [buttons LP MP HP LK MK HK]
   [tick-rate 60])
+(require (submod "." some-game))
 
 ; Syntax is totally subject to change! Not sure how to set the game right now.
-(define-character some-character some-game
-  (move HP . . . .)                  ; One button
-  (move MP+HP . . . .)               ; Many buttons
-  (move 2HP . . . .)                 ; One direction, one button
-  (move 2HP+HK . . . .)              ; One direction, many buttons
-  (move 236HP . . . .)               ; Many directions, one button
-  (move 236HP+HK . . . .)            ; Many directions, many buttons
-  (move 2HP+HK<30> . . . .)          ; Held buttons
-  (move 4<30>6HP . . . .)            ; Held direction (one)
-  (move 2<10>3<20>6HP . . . .)       ; Held direction (many)
-  (move 2<10>3<20>6HP<30> . . . .))  ; Held buttons and directions
-(require (submod "." some-character))
+(move HP 1 2 3 4)                  ; One button
 
-; note that the last direction and the first button are performed separately
-(check-received-inputs (list (make-event 'hold (list HP))
-                             (make-event 'release '(list HP)))
+(move MP+HP 1 2 3 4)               ; Many buttons
+(move 2HP 1 2 3 4)                 ; One direction, one button
+(move 2HP+HK 1 2 3 4)              ; One direction, many buttons
+(move 236HP 1 2 3 4)               ; Many directions, one button
+(move 236HP+HK 1 2 3 4)            ; Many directions, many buttons
+;(move 2HP+HK<30> 1 2 3 4)          ; Held buttons
+;(move 4<30>6HP 1 2 3 4)            ; Held direction (one)
+;(move 2<10>3<20>6HP 1 2 3 4)       ; Held direction (many)
+;(move 2<10>3<20>6HP<30> 1 2 3 4)   ; Held buttons and directions
+
+; note that the last direction and the first button must be performed together
+(check-received-inputs (list (make-event 'hold (list button:HP))
+                             (make-event 'release (list button:HP)))
                        HP)
-(check-received-inputs (list (make-event 'hold (list MP HP))
-                             (make-event 'release (list MP HP)))
+(check-received-inputs (list (make-event 'hold (list button:MP button:HP))
+                             (make-event 'release (list button:MP button:HP)))
                        MP+HP)
-(check-received-inputs (list (make-event 'hold (list 'down))
-                             (make-event 'release (list 'down))
-                             (make-event 'hold (list HP))
-                             (make-event 'release (list HP)))
+(check-received-inputs (list (make-event 'hold (list 'down button:HP))
+                             (make-event 'release (list 'down button:HP)))
                        2HP)
-(check-received-inputs (list (make-event 'hold (list 'down))
-                             (make-event 'release (list 'down))
-                             (make-event 'hold (list HP HK))
-                             (make-event 'release (list HP HK)))
+(check-received-inputs (list (make-event 'hold (list 'down button:HP button:HK))
+                             (make-event 'release (list 'down button:HP button:HK)))
                        2HP+HK)
 (check-received-inputs (list (make-event 'hold (list 'down))
                              (make-event 'release (list 'down))
                              (make-event 'hold (list 'down 'forward))
-                             (make-event 'release (list 'down forward))
-                             (make-event 'hold (list 'forward))
-                             (make-event 'release (list 'forward))
-                             (make-event 'hold (list HP))
-                             (make-event 'release (list HP)))
+                             (make-event 'release (list 'down 'forward))
+                             (make-event 'hold (list 'forward button:HP))
+                             (make-event 'release (list 'forward button:HP)))
                        236HP)
 (check-received-inputs (list (make-event 'hold (list 'down))
                              (make-event 'release (list 'down))
                              (make-event 'hold (list 'down 'forward))
-                             (make-event 'release (list 'down forward))
-                             (make-event 'hold (list 'forward))
-                             (make-event 'release (list 'forward))
-                             (make-event 'hold (list HP HK))
-                             (make-event 'release (list HP HK)))
+                             (make-event 'release (list 'down 'forward))
+                             (make-event 'hold (list 'forward button:HP button:HK))
+                             (make-event 'release (list 'forward button:HP button:HK)))
                        236HP+HK)
 ; TODO
 ; - Hold tests (what's the best way to check for holds in received-inputs?)

@@ -1,7 +1,9 @@
 #lang racket
 
 (require (for-syntax syntax/parse)
-         "../lib/mock-device.rkt")
+         "../lib/mock-device.rkt"
+         "../lib/yomi-lib.rkt"
+         rackunit)
 (provide ensure-setup
          ensure-teardown
          with-mock-device
@@ -20,8 +22,7 @@
                             stuff ...
                             (ensure-teardown))]))
 
-(define-syntax (check-received-inputs stx)
-  (syntax-parse stx
-    [(_ expected action) #'(with-mock-device
-                             (perform-move action)
-                             (check-equal expected received-inputs))]))
+(define (check-received-inputs expected action)
+  (with-mock-device
+    (perform-move action)
+    (check-equal? received-inputs expected)))
