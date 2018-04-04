@@ -60,6 +60,11 @@
          (define btn (allocate-button)) ...)]))
 
 ;; validate-buttons : [Listof Symbol] -> Void
+;; Checks if there are any duplicate buttons and
+;; if there are no more than 8 buttons declared
+;; SIDE EFFECTS:
+;; - error if dups
+;; - error if too many buttons
 (define-for-syntax (validate-buttons btn-list)
   (let ([seen (mutable-set)])
     (for-each (lambda (btn)
@@ -85,6 +90,9 @@
      #`(define mv (make-move #,move-lambda-scoped startup active hitstun recovery))]))
 
 ;; make-move-thunk : String -> Sexpr
+;; Takes a move's string form and produces a thunk with the proper presses/holds
+;; SIDE EFFECTS:
+;; - errors if move string is bad
 (define-for-syntax (make-move-thunk move-str)
   (let ([parsed-move (regexp-match move-regex move-str)])
     (unless parsed-move
@@ -100,6 +108,7 @@
                        ,(build-press (append (first last-direction) buttons))))]))))
 
 ;; explode-directions : String -> [Listof [Listof Symbol]]
+;; Takes directions in string form and produces a list of their symbol representation
 (define-for-syntax (explode-directions dir-string)
   (define (build-dir-list dir)
     (map (lambda (d) `(quote ,d)) (hash-ref direction-table dir)))
@@ -108,10 +117,12 @@
       (map build-dir-list (regexp-match* dir-regex dir-string))))
 
 ;; explode-buttons : String -> [Listof Symbol]
+;; Takes buttons in string form and produces a list of their symbol representation
 (define-for-syntax (explode-buttons button-string)
   (map (lambda (b) (string->symbol (string-append "button:" b)))
        (string-split button-string "+")))
 
 ;; build-press : [Listof Symbol] -> Sexpr
+;; Takes a list of directions and/or buttons and produces a press
 (define-for-syntax (build-press cmds)
   `(press ,@cmds))
