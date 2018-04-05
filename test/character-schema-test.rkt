@@ -4,15 +4,11 @@
          "../lib/yomi-lib.rkt"
          "../lib/mock-device.rkt"
          "../lib/schemas.rkt"
+         "game-schema-test.rkt"  ; we use the game schema defined in here
          "helpers.rkt")
 (require (for-syntax syntax/parse))
 
 ; Happy cases
-
-(define-game some-game
-  [buttons LP MP HP LK MK HK]
-  [tick-rate 60])
-(require (submod "." some-game))
 
 ; Syntax is totally subject to change! Not sure how to set the game right now.
 (move HP 1 2 3 4)                  ; One button

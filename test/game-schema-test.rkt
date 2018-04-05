@@ -14,22 +14,19 @@
      #'(void)]))
 
 ; We have to define this at the top level; doesn't work in tests
-(define-game game
-   [buttons a b c d e f g h]
+(define-game some-game
+   [buttons LP MP HP LK MK HK]
    [tick-rate 60])
-(require (submod "." game))
 
 (test-case
  "declaring buttons"
- (check-equal? (list button:a
-                     button:b
-                     button:c
-                     button:d
-                     button:e
-                     button:f
-                     button:g
-                     button:h)
-               '(b1 b2 b3 b4 b5 b6 b7 b8)))
+ (check-equal? (list LP
+                     MP
+                     HP
+                     LK
+                     MK
+                     HK)
+               '(b1 b2 b3 b4 b5 b6)))
 
 (test-case
  "declaring tick rate"

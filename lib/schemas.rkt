@@ -46,8 +46,7 @@
      (define btn-symbols (map syntax->datum (syntax->list #'(btn ...))))
      (validate-buttons btn-symbols)
      (define tr-id (datum->syntax #'name 'TICK-RATE))
-     #`(module name r
-         (req racket)
+     #`(begin
          (provide #,tr-id (prefix-out button: btn) ...)
          (define buttons-remaining '(b1 b2 b3 b4 b5 b6 b7 b8))
          (define (allocate-button)
