@@ -1,6 +1,9 @@
 #lang racket
 
-(provide define-game
+(provide (rename-out [yomi-module #%module-begin])
+         (except-out (all-from-out racket)
+                     #%module-begin)
+         define-game
          buttons
          tick-rate
          move)
@@ -32,6 +35,22 @@
 ;; Length of the buttons-remaining list,
 ;; hardcoded due to phasing conflict
 (define-for-syntax button-length 8)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define-syntax yomi-module
+  (syntax-parser
+    ;; File contains game schema definition
+    [(_ (~and game-schema ((~literal define-game) exprs ...)))
+     #'(#%plain-module-begin game-schema)]
+    ;; File requires game schema and contains character schema definition
+    [(_ (~and game-require ((~literal using-game) g))
+        (~and char-schema ((~literal define-character) name moves ...)))
+     #'(#%plain-module-begin game-require char-schema)]
+    ;; File requires character schema and contains combo definitions
+    [(_ (~and char-require ((~literal using-character) c))
+        (~and combos ((~literal define-combo) name move-exprs ...)))
+     #'(#%plain-module-begin char-require combos)]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GAME SCHEMA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
