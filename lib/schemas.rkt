@@ -95,10 +95,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CHARACTER SCHEMA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#;(define-syntax define-character
+(define-syntax define-character
   (syntax-parser
-    [(_ name:id game:id
-        )]))
+    [(_ name:id ((~literal move) move-exprs ...) ...)
+     #'(begin (move move-exprs ...) ...)]))
 
 (define-syntax move
   (syntax-parser
