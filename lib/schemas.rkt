@@ -4,6 +4,7 @@
          (except-out (all-from-out racket)
                      #%module-begin)
          define-game
+         define-character
          buttons
          tick-rate
          move)
@@ -60,8 +61,6 @@
     [(_ name:id
         [buttons btn:id ...]
         [tick-rate tix])
-     #:with r (datum->syntax #'name 'racket)
-     #:with req (datum->syntax #'name 'require)
      (define btn-symbols (map syntax->datum (syntax->list #'(btn ...))))
      (validate-buttons btn-symbols)
      (define tr-id (datum->syntax #'name 'TICK-RATE))
@@ -97,8 +96,11 @@
 
 (define-syntax define-character
   (syntax-parser
-    [(_ name:id ((~literal move) move-exprs ...) ...)
-     #'(begin (move move-exprs ...) ...)]))
+    [(_ name:id ((~literal move) move-name move-exprs ...) ...)
+     (define tr-id (datum->syntax #'name 'TICK-RATE))
+     #`(begin
+         (provide #,tr-id move-name ...)
+         (move move-name move-exprs ...) ...)]))
 
 (define-syntax move
   (syntax-parser

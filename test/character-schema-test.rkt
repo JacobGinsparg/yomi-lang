@@ -11,13 +11,13 @@
 ; Happy cases
 
 ; Syntax is totally subject to change! Not sure how to set the game right now.
-(move HP 1 2 3 4)                  ; One button
-
-(move MP+HP 1 2 3 4)               ; Many buttons
-(move 2HP 1 2 3 4)                 ; One direction, one button
-(move 2HP+HK 1 2 3 4)              ; One direction, many buttons
-(move 236HP 1 2 3 4)               ; Many directions, one button
-(move 236HP+HK 1 2 3 4)            ; Many directions, many buttons
+(define-character somebody
+  (move HP 1 2 3 4)                  ; One button
+  (move MP+HP 1 2 3 4)               ; Many buttons
+  (move 2HP 1 2 3 4)                 ; One direction, one button
+  (move 2HP+HK 1 2 3 4)              ; One direction, many buttons
+  (move 236HP 1 2 3 4)               ; Many directions, one button
+  (move 236HP+HK 1 2 3 4))           ; Many directions, many buttons
 ;(move 2HP+HK<30> 1 2 3 4)          ; Held buttons
 ;(move 4<30>6HP 1 2 3 4)            ; Held direction (one)
 ;(move 2<10>3<20>6HP 1 2 3 4)       ; Held direction (many)
