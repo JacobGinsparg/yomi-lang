@@ -41,4 +41,4 @@
  (check-def-failure (define-game skullgirls
                       [buttons LP MP HP LK MK HK a b c d e]
                       [tick-rate 60])
-                    "Can only define"))
+                    "Excess button"))

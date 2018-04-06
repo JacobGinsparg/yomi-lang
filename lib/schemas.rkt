@@ -11,6 +11,7 @@
 
 (require "./yomi-lib.rkt"
          (for-syntax syntax/parse
+                     racket/syntax
                      racket))
 
 (define buttons   0)
@@ -61,7 +62,7 @@
     [(_ name:id
         [buttons btn:id ...]
         [tick-rate tix])
-     (define btn-symbols (map syntax->datum (syntax->list #'(btn ...))))
+     (define btn-symbols (syntax->list #'(btn ...)))
      (validate-buttons btn-symbols)
      (define tr-id (datum->syntax #'name 'TICK-RATE))
      #`(begin
@@ -76,21 +77,22 @@
          (define #,tr-id tix)
          (define btn (allocate-button)) ...)]))
 
-;; validate-buttons : [Listof Symbol] -> Void
+;; validate-buttons : [Listof Syntax] -> Void
 ;; Checks if there are any duplicate buttons and
 ;; if there are no more than 8 buttons declared
 ;; SIDE EFFECTS:
 ;; - error if dups
 ;; - error if too many buttons
-(define-for-syntax (validate-buttons btn-list)
+(define-for-syntax (validate-buttons btn-stx-list)
   (let ([seen (mutable-set)])
     (for-each (lambda (btn)
-                (if (set-member? seen btn)
-                    (error 'define-game "Duplicate button declared: ~s" btn)
-                    (set-add! seen btn)))
-              btn-list)
-    (when (> (length btn-list) button-length)
-      (error 'define-game "Can only define ~s buttons, ~s declared" button-length (length btn-list)))))
+                (let ([btn-sym (syntax->datum btn)])
+                  (if (set-member? seen btn-sym)
+                      (wrong-syntax btn "Duplicate button declared")
+                      (set-add! seen btn-sym))))
+              btn-stx-list)
+    (when (> (length btn-stx-list) button-length)
+      (wrong-syntax (list-ref btn-stx-list button-length) "Excess button"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CHARACTER SCHEMA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -105,7 +107,7 @@
 (define-syntax move
   (syntax-parser
     [(_ mv:id startup:nat active:nat hitstun:nat recovery:nat)
-     (define move-lambda (make-move-thunk (symbol->string (syntax->datum #'mv))))
+     (define move-lambda (make-move-thunk #'mv))
      (define move-lambda-scoped (datum->syntax #'mv move-lambda))
      #`(define mv (make-move #,move-lambda-scoped startup active hitstun recovery))]))
 
@@ -113,10 +115,10 @@
 ;; Takes a move's string form and produces a thunk with the proper presses/holds
 ;; SIDE EFFECTS:
 ;; - errors if move string is bad
-(define-for-syntax (make-move-thunk move-str)
-  (let ([parsed-move (regexp-match move-regex move-str)])
+(define-for-syntax (make-move-thunk move-stx)
+  (let ([parsed-move (regexp-match move-regex (symbol->string (syntax->datum move-stx)))])
     (unless parsed-move
-      (error 'define-character "Bad move format"))
+      (wrong-syntax move-stx "Incorrect move format"))
     (match-define (list _ prefix directions buttons) parsed-move)
     (let ([directions (explode-directions directions)]
           [buttons (explode-buttons buttons)])
