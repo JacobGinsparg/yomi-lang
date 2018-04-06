@@ -19,6 +19,7 @@
 
 (define-for-syntax tick-rate-id 'TICK-RATE)
 (define-for-syntax game-def-id 'GAME-DEFINED)
+(define-for-syntax char-def-id 'CHARACTER-DEFINED)
 
 (define-for-syntax move-regex
   (regexp "^([a-z]\\.)?((?:[1-9](?:<[0-9]+>)?)+)?([A-z]+(?:\\+[A-z]+)*(?:<[0-9]+>)?)$"))
@@ -113,10 +114,21 @@
 (define-syntax define-character
   (syntax-parser
     [(_ name:id ((~literal move) move-name move-exprs ...) ...)
-     (define tr-id (datum->syntax #'name 'TICK-RATE))
+     (define tr-id (datum->syntax #'name tick-rate-id))
+     (define cd-id (datum->syntax #'name char-def-id))
      #`(begin
-         (provide #,tr-id move-name ...)
+         (provide #,cd-id #,tr-id move-name ...)
+         (define #,cd-id #t)
          (move move-name move-exprs ...) ...)]))
+
+(define-syntax using-character
+  (syntax-parser
+    [(_ path:string)
+     (define char-def (datum->syntax #'path char-def-id))
+     #`(begin
+         (require path)
+         (unless #,char-def
+           (error 'character "Character schema not defined in: ~a" path)))]))
 
 (define-syntax move
   (syntax-parser
