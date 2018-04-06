@@ -8,6 +8,10 @@
          "helpers.rkt")
 (require (for-syntax syntax/parse))
 
+; Check if game is defined
+
+(check-true GAME-DEFINED "No game schema defined")
+
 ; Happy cases
 
 ; Syntax is totally subject to change! Not sure how to set the game right now.

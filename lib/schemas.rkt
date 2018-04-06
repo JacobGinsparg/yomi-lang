@@ -17,6 +17,9 @@
 (define buttons   0)
 (define tick-rate 1)
 
+(define-for-syntax tick-rate-id 'TICK-RATE)
+(define-for-syntax game-def-id 'GAME-DEFINED)
+
 (define-for-syntax move-regex
   (regexp "^([a-z]\\.)?((?:[1-9](?:<[0-9]+>)?)+)?([A-z]+(?:\\+[A-z]+)*(?:<[0-9]+>)?)$"))
 (define-for-syntax dir-regex
@@ -64,9 +67,10 @@
         [tick-rate tix])
      (define btn-symbols (syntax->list #'(btn ...)))
      (validate-buttons btn-symbols)
-     (define tr-id (datum->syntax #'name 'TICK-RATE))
+     (define tr-id (datum->syntax #'name tick-rate-id))
+     (define gd-id (datum->syntax #'name game-def-id))
      #`(begin
-         (provide #,tr-id (prefix-out button: btn) ...)
+         (provide #,gd-id #,tr-id (prefix-out button: btn) ...)
          (define buttons-remaining '(b1 b2 b3 b4 b5 b6 b7 b8))
          (define (allocate-button)
            (if (empty? buttons-remaining)
@@ -75,7 +79,17 @@
                  (set! buttons-remaining (rest buttons-remaining))
                  next-button)))
          (define #,tr-id tix)
+         (define #,gd-id #t)
          (define btn (allocate-button)) ...)]))
+
+(define-syntax using-game
+  (syntax-parser
+    [(_ path:string)
+     (define game-def (datum->syntax #'path game-def-id))
+     #`(begin
+         (require path)
+         (unless #,game-def
+           (error 'game "Game schema not defined in: ~a" path)))]))
 
 ;; validate-buttons : [Listof Syntax] -> Void
 ;; Checks if there are any duplicate buttons and
