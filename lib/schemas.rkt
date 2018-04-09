@@ -20,12 +20,19 @@
 (define tick-rate 1)
 
 (define-for-syntax tick-rate-id 'TICK-RATE)
+
 (define-for-syntax game-defined? #f)
 (define-for-syntax (flip-game-defined)
   (set! game-defined? #t))
+(define-for-syntax game-loaded? #f)
+(define-for-syntax (set-game-loaded g)
+  (set! game-loaded? g))
 (define-for-syntax character-defined? #f)
 (define-for-syntax (flip-character-defined)
   (set! character-defined? #t))
+(define-for-syntax character-loaded? #f)
+(define-for-syntax (set-character-loaded c)
+  (set! character-loaded? c))
 
 (define-for-syntax move-regex
   (regexp "^([a-z]\\.)?((?:[1-9](?:<[0-9]+>)?)+)?([A-z]+(?:\\+[A-z]+)*(?:<[0-9]+>)?)$"))
@@ -95,10 +102,14 @@
   (syntax-parser
     [(_ path:string)
      #`(begin
+         (begin-for-syntax
+           (when (and game-loaded? #;(not character-load?))
+             (error 'game "Already using game schema: ~a" game-loaded?)))
          (require path)
          (begin-for-syntax
            (unless game-defined?
-             (error 'game "Game schema not defined in: ~a" path))))]))
+             (error 'game "Game schema not defined in: ~a" path))
+           (set-game-loaded path)))]))
 
 ;; validate-buttons : [Listof Syntax] -> Void
 ;; Checks if there are any duplicate buttons and
@@ -135,10 +146,14 @@
   (syntax-parser
     [(_ path:string)
      #`(begin
+         (begin-for-syntax
+           (when character-loaded?
+             (error 'character "Already using character schema: ~a" character-loaded?)))
          (require path)
          (begin-for-syntax
            (unless character-defined?
-             (error 'character "Character schema not defined in: ~a" path))))]))
+             (error 'character "Character schema not defined in: ~a" path))
+           (set-character-loaded path)))]))
 
 (define-syntax move
   (syntax-parser
