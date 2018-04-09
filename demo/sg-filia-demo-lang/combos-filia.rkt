@@ -1,8 +1,7 @@
 #lang racket
 
-(require "schema-filia.rkt"
-         "../../lib/uinput.rkt"
-         "../../lib/yomi-lib.rkt")
+(require "../../lib/yomi-lang.rkt")
+(using-character "schema-filia.rkt")
 
 
 ; Some combos! Finally!

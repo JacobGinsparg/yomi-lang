@@ -5,6 +5,8 @@
                      #%module-begin)
          define-game
          define-character
+         using-game
+         using-character
          buttons
          tick-rate
          move)

@@ -1,6 +1,6 @@
 #lang racket
 
-(require "../../lib/schemas.rkt")
+(require "../../lib/yomi-lang.rkt")
 
 
 ; Skullgirls game schema

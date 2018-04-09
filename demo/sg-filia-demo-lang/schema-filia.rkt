@@ -1,13 +1,11 @@
 #lang racket
 
-(require "schema-skullgirls.rkt"
-         "../../lib/uinput.rkt"
-         "../../lib/schemas.rkt")
+(require "../../lib/yomi-lang.rkt")
+(using-game "schema-skullgirls.rkt")
 
 
 ; Filia character schema
 ; (this is incomplete; just enough for simple testing)
-
 (define-character filia
   (move 5LP 5 3 7 14)
   (move 5MP 13 3 9 19)
