@@ -1,17 +1,9 @@
 #lang racket
 
-(require (for-syntax rackunit
-                     syntax/parse)
-         rackunit
-         "../lib/schemas.rkt")
+(require rackunit
+         "../lib/schemas.rkt"
+         "helpers.rkt")
 
-; Expand the macro and assert that it fails with the given message
-(define-syntax check-def-failure
-  (syntax-parser
-    [(_ def msg)
-     (check-exn (regexp (syntax->datum #'msg))
-                (lambda () (local-expand #'def 'module-begin null)))
-     #'(void)]))
 
 ; We have to define this at the top level; doesn't work in tests
 (define-game some-game
@@ -41,4 +33,10 @@
  (check-def-failure (define-game skullgirls
                       [buttons LP MP HP LK MK HK a b c d e]
                       [tick-rate 60])
-                    "Excess button"))
+                    "Excess button")
+ ; Wrap in #%module-begin so this runs at the same level as some-game on line 17
+ (check-def-failure (#%module-begin
+                     (define-game x
+                       [buttons a]
+                       [tick-rate 1]))
+                    "Game schema already defined"))

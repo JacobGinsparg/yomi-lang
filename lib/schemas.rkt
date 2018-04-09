@@ -1,7 +1,7 @@
 #lang racket
 
-(provide (rename-out [yomi-module #%module-begin])
-         (except-out (all-from-out racket)
+(provide #;(rename-out [yomi-module #%module-begin])
+         #;(except-out (all-from-out racket)
                      #%module-begin)
          define-game
          define-character

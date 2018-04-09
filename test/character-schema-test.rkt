@@ -8,10 +8,6 @@
          "helpers.rkt")
 (require (for-syntax syntax/parse))
 
-; Check if game is defined
-
-(check-true GAME-DEFINED "No game schema defined")
-
 ; Happy cases
 
 ; Syntax is totally subject to change! Not sure how to set the game right now.
@@ -26,6 +22,12 @@
 ;(move 4<30>6HP 1 2 3 4)            ; Held direction (one)
 ;(move 2<10>3<20>6HP 1 2 3 4)       ; Held direction (many)
 ;(move 2<10>3<20>6HP<30> 1 2 3 4)   ; Held buttons and directions
+
+; Wrap in #%module-begin so this runs at the same level as some-character on
+; line 14
+(check-def-failure (#%module-begin
+                    (define-character somebody-else))
+                   "Character schema already defined")
 
 ; note that the last direction and the first button must be performed together
 (check-received-inputs (list (make-event 'hold (list button:HP))
