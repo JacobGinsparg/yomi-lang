@@ -23,7 +23,9 @@
 (define-for-syntax game-defined? #f)
 (define-for-syntax (flip-game-defined)
   (set! game-defined? #t))
-(define-for-syntax char-def-id 'CHARACTER-DEFINED)
+(define-for-syntax character-defined? #f)
+(define-for-syntax (flip-character-defined)
+  (set! character-defined? #t))
 
 (define-for-syntax move-regex
   (regexp "^([a-z]\\.)?((?:[1-9](?:<[0-9]+>)?)+)?([A-z]+(?:\\+[A-z]+)*(?:<[0-9]+>)?)$"))
@@ -121,20 +123,22 @@
   (syntax-parser
     [(_ name:id ((~literal move) move-name move-exprs ...) ...)
      (define tr-id (datum->syntax #'name tick-rate-id))
-     (define cd-id (datum->syntax #'name char-def-id))
      #`(begin
-         (provide #,cd-id #,tr-id move-name ...)
-         (define #,cd-id #t)
+         (begin-for-syntax
+           (if character-defined?
+               (error 'character "Character schema already defined")
+               (flip-character-defined)))
+         (provide #,tr-id move-name ...)
          (move move-name move-exprs ...) ...)]))
 
 (define-syntax using-character
   (syntax-parser
     [(_ path:string)
-     (define char-def (datum->syntax #'path char-def-id))
      #`(begin
          (require path)
-         (unless #,char-def
-           (error 'character "Character schema not defined in: ~a" path)))]))
+         (begin-for-syntax
+           (unless character-defined?
+             (error 'character "Character schema not defined in: ~a" path))))]))
 
 (define-syntax move
   (syntax-parser
