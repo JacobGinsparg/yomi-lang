@@ -103,7 +103,7 @@
     [(_ path:string)
      #`(begin
          (begin-for-syntax
-           (when (and game-loaded? #;(not character-load?))
+           (when game-loaded?
              (error 'game "Already using game schema: ~a" game-loaded?)))
          (require path)
          (begin-for-syntax
