@@ -44,11 +44,10 @@ the schema/language level.
                        6 3 7 7))
 (define 623MP+HP (make-move (lambda () (begin (press 'forward)
                                               (press 'down)
-                                              (press 'down 'forward)
-                                              (press MP HP)))
+                                              (press 'down 'forward MP HP)))
                             4 33 34 75)) ; expect these numbers to be inaccurate
 (define fenrir 623MP+HP)
-                                              
+
 
 ; ------------------------------------------------------------------------------
 
