@@ -214,7 +214,9 @@
      (validate-chainers (syntax->list #'(chainer ...)))
      #;(validate-moves (syntax->list #'(move-id ... last-move-id)))
      (define move-chain (datum->syntax #'name (make-move-chain (syntax->list #'((move-id chainer) ...)))))
-     #`(define name (list #,@move-chain last-move-id))]))
+     #`(define name (list #,@move-chain last-move-id))]
+    [stx
+     (raise-syntax-error 'define-combo "Malformed combo" #'stx)]))
 
 ;; make-move-chain : [Listof Syntax] -> Sexpr
 ;; Takes a list of move links/cancels and produces a list of their combo form

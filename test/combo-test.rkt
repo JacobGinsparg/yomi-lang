@@ -67,4 +67,7 @@
                         bad-combo)))
 
  (check-def-failure (define-combo bad-chain HP + HP)
-                    "Use ~ for cancels, & for links"))
+                    "Use ~ for cancels, & for links")
+
+ (check-def-failure (define-combo bad-chain HP ~ HP ~)
+                    "Malformed combo"))
