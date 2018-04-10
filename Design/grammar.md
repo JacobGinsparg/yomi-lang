@@ -22,5 +22,5 @@ using curly braces to refer to rules/types.
     ComboSeq ::= {DirectionSeq} [{ComboSeq}]
                | {Move} [{LinkOrCancel} {ComboSeq}]
 
-    LinkOrCancel ::= ,
+    LinkOrCancel ::= &
                    | ~

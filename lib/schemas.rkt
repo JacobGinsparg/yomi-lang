@@ -5,19 +5,25 @@
                      #%module-begin)
          define-game
          define-character
+         define-combo
          using-game
          using-character
          buttons
          tick-rate
-         move)
+         move
+         ~ &)
 
 (require "./yomi-lib.rkt"
          (for-syntax syntax/parse
                      racket/syntax
-                     racket))
+                     (except-in racket
+                                link)
+                     "./yomi-lib.rkt"))
 
 (define buttons   0)
 (define tick-rate 1)
+(define & 2)
+(define ~ 3)
 
 (define-for-syntax tick-rate-id 'TICK-RATE)
 
@@ -199,3 +205,44 @@
 ;; Takes a list of directions and/or buttons and produces a press
 (define-for-syntax (build-press cmds)
   `(press ,@cmds))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; COMBOS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define-syntax define-combo
+  (syntax-parser
+    [(_ name:id (~seq move-id:id chainer:id) ... last-move-id:id)
+     (validate-chainers (syntax->list #'(chainer ...)))
+     #;(validate-moves (syntax->list #'(move-id ... last-move-id)))
+     (define move-chain (datum->syntax #'name (make-move-chain (syntax->list #'((move-id chainer) ...)))))
+     #`(define name (list #,@move-chain last-move-id))]))
+
+;; make-move-chain : [Listof Syntax] -> Sexpr
+;; Takes a list of move links/cancels and produces a list of their combo form
+(define-for-syntax (make-move-chain moves)
+  `(,@(append-map (lambda (mv)
+                    (let* ([mv-data (syntax->datum mv)]
+                           [move-name (first mv-data)]
+                           [chainer (if (symbol=? (second mv-data) '~) 'cancel 'link)])
+                      `(,move-name (,chainer ,move-name TICK-RATE))))
+                  moves)))
+
+;; validate-chainers : [Listof Syntax] -> Void
+;; Validates that all of the given syntax objects are ~ or & identifiers
+(define-for-syntax (validate-chainers chainers)
+  (for-each (lambda (ch)
+              (let ([ch-sym (syntax->datum ch)])
+                (unless (or (symbol=? '~ ch-sym) (symbol=? '& ch-sym))
+                  (wrong-syntax ch "Use ~~ for cancels, & for links"))))
+            chainers))
+
+;; validate-moves : [Listof Syntax] -> Void
+;; Validates that all of the given syntax objects contain valid moves
+#;
+(define-for-syntax (validate-moves moves)
+  (for-each (lambda (mv)
+              (let ([exp-mv (local-expand mv 'expression null)])
+                (displayln (symbol? exp-mv))
+                (displayln (move? exp-mv))
+                (unless (move? exp-mv)
+                  (wrong-syntax mv "Must use moves in combos"))))
+            moves))
