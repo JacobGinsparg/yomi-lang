@@ -9,24 +9,17 @@
          "../lib/schemas.rkt"
          "../lib/yomi-lib.rkt")
 
-(define-syntax check-def-failure
-  (syntax-parser
-    [(_ def msg)
-     (check-exn (regexp (syntax->datum #'msg))
-                (lambda () (local-expand #'def 'module-begin null)))
-     #'(void)]))
+;; NOTE: Need to update tests to play nicer with holds when we add hold support
 
 (using-character "character-schema-test.rkt")
 
-(define-combo basic-link HP & HP)
-
+(define-combo bad-combo    +)
+(define-combo short-combo  HP)
+(define-combo basic-link   HP & HP)
 (define-combo basic-cancel HP ~ HP)
-
 (define-combo link-then-cancel HP & HP ~ HP)
-
 (define-combo cancel-then-link HP ~ HP & HP)
-
-(define-combo bad-combo +)
+(define-combo complex-combo    HP & HP ~ 236HP+HK)
 
 (check-combo-inputs (list (make-event 'hold (list button:HP))
                           (make-event 'release (list button:HP))
@@ -55,6 +48,18 @@
                           (make-event 'hold (list button:HP))
                           (make-event 'release (list button:HP)))
                     cancel-then-link)
+
+(check-combo-inputs (list (make-event 'hold (list button:HP))
+                          (make-event 'release (list button:HP))
+                          (make-event 'hold (list button:HP))
+                          (make-event 'release (list button:HP))
+                          (make-event 'hold (list 'down))
+                          (make-event 'release (list 'down))
+                          (make-event 'hold (list 'down 'forward))
+                          (make-event 'release (list 'down 'forward))
+                          (make-event 'hold (list 'forward button:HP button:HK))
+                          (make-event 'release (list 'forward button:HP button:HK)))
+                    complex-combo)
 
 (test-case
  "Bad combos"

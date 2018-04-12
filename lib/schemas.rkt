@@ -212,7 +212,6 @@
   (syntax-parser
     [(_ name:id (~seq move-id:id chainer:id) ... last-move-id:id)
      (validate-chainers (syntax->list #'(chainer ...)))
-     #;(validate-moves (syntax->list #'(move-id ... last-move-id)))
      (define move-chain (datum->syntax #'name (make-move-chain (syntax->list #'((move-id chainer) ...)))))
      #`(define name (list #,@move-chain last-move-id))]
     [stx
@@ -236,15 +235,3 @@
                 (unless (or (symbol=? '~ ch-sym) (symbol=? '& ch-sym))
                   (wrong-syntax ch "Use ~~ for cancels, & for links"))))
             chainers))
-
-;; validate-moves : [Listof Syntax] -> Void
-;; Validates that all of the given syntax objects contain valid moves
-#;
-(define-for-syntax (validate-moves moves)
-  (for-each (lambda (mv)
-              (let ([exp-mv (local-expand mv 'expression null)])
-                (displayln (symbol? exp-mv))
-                (displayln (move? exp-mv))
-                (unless (move? exp-mv)
-                  (wrong-syntax mv "Must use moves in combos"))))
-            moves))
