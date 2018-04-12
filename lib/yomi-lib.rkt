@@ -12,6 +12,7 @@ List of problems I can think of with this implementation:
 
 (provide make-move
          make-delay
+         move?
          link
          cancel
          perform-combo

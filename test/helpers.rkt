@@ -9,7 +9,8 @@
          ensure-teardown
          with-mock-device
          check-received-inputs
-         check-def-failure)
+         check-def-failure
+         check-combo-inputs)
 
 
 ; Safely setup mock device
@@ -42,3 +43,8 @@
      (check-exn (regexp (syntax->datum #'msg))
                 (lambda () (local-expand #'def 'module-begin null)))
      #'(void)]))
+
+(define (check-combo-inputs expected action)
+  (with-mock-device
+    (perform-combo action)
+    (check-equal? received-inputs expected)))
