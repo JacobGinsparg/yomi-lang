@@ -16,6 +16,7 @@ List of problems I can think of with this implementation:
          link
          cancel
          perform-combo
+         perform-combo-for-test
          perform-move
          frames->seconds)
 
@@ -78,12 +79,12 @@ List of problems I can think of with this implementation:
 (define (perform-combo-for-test combo)
   (cond [(empty? combo) (void)]
         [(move? (first combo))
-         (perform-move (first combo))
-         (perform-combo (rest combo))]
+         (begin (perform-move (first combo))
+                (perform-combo-for-test (rest combo)))]
         [(delay? (first combo))
-         (write-input-event 'delay '() (delay-seconds (first combo)))
-         (perform-combo (rest combo))]
-        [else (error 'perform-combo "invalid combo")]))
+         (begin (write-input-event 'delay '() (delay-seconds (first combo)))
+                (perform-combo-for-test (rest combo)))]
+        [else (error 'perform-combo-for-test "invalid combo")]))
 ; (this is hacky)
 
 ; perform-move: Move -> Void
