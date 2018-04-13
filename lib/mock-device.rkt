@@ -64,9 +64,6 @@
   (set! received-inputs '())
   (set! is-set-up #f))
 
-(define (my-perform-combo combo)
-  (displayln "shadowed"))
-
 (define (error-if-uninitialized sym)
   (when (not is-set-up)
     (error sym "device not initialized; run setup")))
