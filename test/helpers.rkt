@@ -46,5 +46,5 @@
 
 (define (check-combo-inputs expected action)
   (with-mock-device
-    (perform-combo action)
+    (perform-combo-for-test action)
     (check-equal? received-inputs expected)))
