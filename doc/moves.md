@@ -7,12 +7,12 @@ Prefix ::= {Symbol}.
 
 Direction ::= {1-9}
 
-DirectionSeq ::= {Direction}[<{Nat}>]
-                | {Direction}[<{Nat}>]{DirectionSeq}
+DirectionSeq ::= {Direction}
+               | {Direction}{DirectionSeq}
 
 Button ::= {Symbol}
 
-ButtonSeq ::= {Button}[<{Nat}>]
+ButtonSeq ::= {Button}
             | {Button}+{ButtonSeq}
 
 Move ::= [{Prefix}][{DirectionSeq}]{ButtonSeq}
@@ -40,19 +40,18 @@ A _direction_ is a digit in the range [1, 9] that signifies a directional input.
 
 Note that directions are written such that the character is on the left side of the screen and facing right. This means 8 is up, 2 is down, 4 is backward, and 6 is forward. 5 is the neutral position, equivlant to inputting no direction. 1, 3, 7, and 9 are used for diagonals.
 
-In a combo, the _direction sequence_ is an optional sequence of directions that will be performed one at a time in order from left to right. If a direction needs to be held for some interval before inputting the next direction, the length of the interval (in frames) can be specified by wrapping it in parenthesis after the individual direction. If the direction sequence is not specified, we infer that the direction is 5 (neutral/none).
+In a combo, the _direction sequence_ is an optional sequence of directions that will be performed one at a time in order from left to right. If the direction sequence for a move is not specified, we infer that the direction is 5 (neutral/none).
 
 
 ## Buttons
 
 _Buttons_ are labels defined in the game schema.
 
-In a combo, the _button sequence_ is a combination of buttons that will be performed simultaneously. Each button must be separated by a +. If the button combination must be held for some interval, the interval can be specified (in frames) by wrapping it parenthesis after the whole button sequence.
+In a combo, the _button sequence_ is a combination of buttons that will be performed simultaneously. Each button must be separated by a +.
 
 
 ## Examples
 
 - `j.236K`: Assumed to be in the air, input directions down, down-forward, and forward, then press the K button
 - `623HP+HK`: Input directions forward, down, and down-forward, then press the HP and HP buttons simultaneously
-- `4<30>6HP`: Input direction back for 30 frames, then input direction forward and press the HP buton
 - `j.HK`: Assumed to be in the air, press the HK button (no direction, equivalent to "j.5HK")
