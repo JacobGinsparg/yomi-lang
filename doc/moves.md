@@ -18,11 +18,15 @@ ButtonSeq ::= {Button}[<{Nat}>]
 Move ::= [{Prefix}][{DirectionSeq}]{ButtonSeq}
 ```
 
+This grammar applies to the move identifers used in [character schemas](schemas.md) and [combos](combos.md).
+
+
 ## Prefixes
 
 The _prefix_ is an optional piece at the beginning of the move used to differentiate it from other moves with the same inputs. For example, it is possible that a move in the air is performed with the same input sequence as a move on the ground, but has different frame properties. A prefix for aerial moves would allow the programmer to distinguish between these two moves.
 
 Prefixes do not need to be declared in a schema before they can be used.
+
 
 ## Directions
 
@@ -38,11 +42,13 @@ Note that directions are written such that the character is on the left side of 
 
 In a combo, the _direction sequence_ is an optional sequence of directions that will be performed one at a time in order from left to right. If a direction needs to be held for some interval before inputting the next direction, the length of the interval (in frames) can be specified by wrapping it in parenthesis after the individual direction. If the direction sequence is not specified, we infer that the direction is 5 (neutral/none).
 
+
 ## Buttons
 
 _Buttons_ are labels defined in the game schema.
 
 In a combo, the _button sequence_ is a combination of buttons that will be performed simultaneously. Each button must be separated by a +. If the button combination must be held for some interval, the interval can be specified (in frames) by wrapping it parenthesis after the whole button sequence.
+
 
 ## Examples
 
