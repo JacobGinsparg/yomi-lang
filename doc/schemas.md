@@ -34,7 +34,7 @@ A character schema describes a character's moveset and their frame data properti
 
 A game schema needs to be loaded using `using-game` before defining a character schema. Only one character schema may be defined per file and per program. The character schema must be defined in a separate file from the game schema.
 
-Moves are defined using the `move` keyword. The first argument is the move's input sequence; see "Writing moves and combos" for more details. The next four arguments are the move's frame data: startup, active frames, hitstun, and recovery. These must all be natural numbers.
+Moves are defined using the `move` keyword. The first argument is the move's input sequence; see [Writing moves](moves.md) for more details. The next four arguments are the move's frame data: startup, active frames, hitstun, and recovery. These must all be natural numbers.
 
 Suppose that the Skullgirls game schema resides in the file "skullgirls.rkt" and we want to create a character schema for Filia in the same directory. The file "filia.rkt" would look like this:
 ```racket
