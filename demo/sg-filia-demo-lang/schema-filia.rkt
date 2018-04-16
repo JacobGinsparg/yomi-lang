@@ -6,8 +6,6 @@
 
 ; Filia character schema
 (define-character filia
-  ; hacky wacky
-  (move m.9LK 0 0 0 0)
   ; normals
   
   (move LP 5 3 7 14)
