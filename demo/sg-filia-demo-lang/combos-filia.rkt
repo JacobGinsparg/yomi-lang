@@ -1,8 +1,6 @@
 #lang racket
 
-(require "../../lib/uinput.rkt"
-         "../../lib/yomi-lib.rkt"
-         "../../lib/schemas.rkt")
+(require "../../lib/yomi-lang.rkt")
 
 (using-character "schema-filia.rkt")
 
@@ -16,7 +14,9 @@
   LP ~ LP ~ LK ~ MP ~ 2MK ~ HP
   ~ 214MP+HP & 214MK+HK & 2LP ~ MK ~ HP ~ 623MP+HP)
 
-(define (go)
+(wait-before-perform 3)
+
+#;(define (go)
   (setup)
   (sleep 3)
   (perform-combo foo)
