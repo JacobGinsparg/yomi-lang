@@ -39,9 +39,9 @@
   (set! character-loaded? c))
 
 (define-for-syntax move-regex
-  (regexp "^([a-z]\\.)?((?:[1-9](?:<[0-9]+>)?)+)?([A-z]+(?:\\+[A-z]+)*(?:<[0-9]+>)?)$"))
+  (regexp "^([a-z]\\.)?((?:[1-9])+)?([A-z]+(?:\\+[A-z]+)*)$"))
 (define-for-syntax dir-regex
-  (regexp "[1-9](?:<[0-9]+>)?"))
+  (regexp "[1-9]"))
 
 (define-for-syntax direction-table
   (hash
