@@ -103,7 +103,9 @@
                  (set! buttons-remaining (rest buttons-remaining))
                  next-button)))
          (define #,tr-id tix)
-         (define btn (allocate-button)) ...)]))
+         (define btn (allocate-button)) ...)]
+    [stx
+     (raise-syntax-error 'define-game "Bad game schema" #'stx)]))
 
 (define-syntax using-game
   (syntax-parser
@@ -139,7 +141,7 @@
 
 (define-syntax define-character
   (syntax-parser
-    [(_ name:id ((~literal move) move-name move-exprs ...) ...
+    [(_ name:id (~and full-move ((~literal move) move-name move-exprs ...)) ...
                 ((~literal alias) alias-name aliased-move) ...)
      (define tr-id (datum->syntax #'name tick-rate-id))
      (define move-names-set (list->set (stx-map syntax->datum #'(move-name ...))))
@@ -153,8 +155,10 @@
                (error 'character "Character schema already defined")
                (flip-character-defined)))
          (provide #,tr-id move-name ... alias-name ...)
-         (move move-name move-exprs ...) ...
-         (define alias-name aliased-move) ...)]))
+         full-move ...
+         (define alias-name aliased-move) ...)]
+    [stx
+     (raise-syntax-error 'define-character "Bad character schema" #'stx)]))
 
 (define-syntax using-character
   (syntax-parser
@@ -174,7 +178,9 @@
     [(_ mv:id startup:nat active:nat hitstun:nat recovery:nat)
      (define move-lambda (make-move-thunk #'mv))
      (define move-lambda-scoped (datum->syntax #'mv move-lambda))
-     #`(define mv (make-move #,move-lambda-scoped startup active hitstun recovery))]))
+     #`(define mv (make-move #,move-lambda-scoped startup active hitstun recovery))]
+    [stx
+     (raise-syntax-error 'move "Bad move syntax" #'stx)]))
 
 
 
