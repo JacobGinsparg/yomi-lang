@@ -15,6 +15,7 @@
 
 (require "./yomi-lib.rkt"
          (for-syntax syntax/parse
+                     syntax/stx
                      racket/syntax
                      (except-in racket
                                 link)
@@ -138,15 +139,22 @@
 
 (define-syntax define-character
   (syntax-parser
-    [(_ name:id ((~literal move) move-name move-exprs ...) ...)
+    [(_ name:id ((~literal move) move-name move-exprs ...) ...
+                ((~literal alias) alias-name aliased-move) ...)
      (define tr-id (datum->syntax #'name tick-rate-id))
+     (define move-names-set (list->set (stx-map syntax->datum #'(move-name ...))))
+     (for-each (lambda (a)
+                 (unless (set-member? move-names-set a)
+                   (error 'alias "move not defined: ~a" a)))
+               (stx-map syntax->datum #'(aliased-move ...)))
      #`(begin
          (begin-for-syntax
            (if character-defined?
                (error 'character "Character schema already defined")
                (flip-character-defined)))
-         (provide #,tr-id move-name ...)
-         (move move-name move-exprs ...) ...)]))
+         (provide #,tr-id move-name ... alias-name ...)
+         (move move-name move-exprs ...) ...
+         (define alias-name aliased-move) ...)]))
 
 (define-syntax using-character
   (syntax-parser
@@ -167,6 +175,8 @@
      (define move-lambda (make-move-thunk #'mv))
      (define move-lambda-scoped (datum->syntax #'mv move-lambda))
      #`(define mv (make-move #,move-lambda-scoped startup active hitstun recovery))]))
+
+
 
 ;; make-move-thunk : String -> Sexpr
 ;; Takes a move's string form and produces a thunk with the proper presses/holds
