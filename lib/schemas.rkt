@@ -127,11 +127,6 @@
                    (string->symbol (string-append "button:"
                                                   button-name-string)))))
 
-;; create-button-ids : Id -> Sexpr
-;; Create Sexpr for the button definition
-(define-for-syntax (create-button-definition button)
-  `(define ,button (allocate-button)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CHARACTER SCHEMA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define-syntax define-character
