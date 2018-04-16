@@ -6,6 +6,8 @@
 
 ; Filia character schema
 (define-character filia
+  ; hacky wacky
+  (move m.9LK 0 0 0 0)
   ; normals
   
   (move LP 5 3 7 14)
@@ -61,8 +63,11 @@
   (move 214MK+HK 8 13 41 49)
   (move j.214MK+HK 7 34 44 0)  ; variable recovery based on when she lands
   ; tricobezoar
-  (move 214MP+HP 8 2 19 0)) ; should recovery really be 10?
+  (move 214MP+HP 8 2 19 100) ; is recovery accurate?
 
-; this is a hack
-(provide fenrir)
-(define fenrir 623MP+HP)
+  ; aliases
+  
+  (alias fenrir 623MP+HP)
+  (alias gregor 214MK+HK)
+  (alias tricobezoar 214MP+HP)
+  (alias throw LP+LK))

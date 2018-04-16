@@ -12,13 +12,6 @@
 
 (define-combo foo
   LP ~ LP ~ LK ~ MP ~ 2MK ~ HP
-  ~ 214MP+HP & 214MK+HK & 2LP ~ MK ~ HP ~ 623MP+HP)
+  ~ 214MP+HP & 2LP ~ MK ~ HP ~ 623MP+HP)
 
 (wait-before-perform 3)
-
-#;(define (go)
-  (setup)
-  (sleep 3)
-  (perform-combo foo)
-  (teardown))
-  
