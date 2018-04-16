@@ -14,7 +14,6 @@
          (rename-out [my-make-event make-event])
          event-state
          event-inputs
-         ;my-perform-combo
          write-input-event)
 
 
