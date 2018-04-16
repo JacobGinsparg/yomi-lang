@@ -67,15 +67,17 @@
     [(_ name:id
         [buttons btn:id ...]
         [tick-rate tix])
-     (define btn-symbols (syntax->list #'(btn ...)))
-     (validate-buttons btn-symbols)
+     (define btn-list (syntax->list #'(btn ...)))
+     (validate-buttons btn-list)
+     (define new-buttons (map (compose prefix-button-id syntax->datum) btn-list))
+     (define button-definitions (map create-button-definition new-buttons))
      (define tr-id (datum->syntax #'name tick-rate-id))
      #`(begin
          (begin-for-syntax
            (if game-defined?
                (error 'game "Game schema already defined")
                (flip-game-defined)))
-         (provide #,tr-id (prefix-out button: btn) ...)
+         (provide #,tr-id #,@new-buttons)
          (define buttons-remaining '(b1 b2 b3 b4 b5 b6 b7 b8))
          (define (allocate-button)
            (if (empty? buttons-remaining)
@@ -84,7 +86,7 @@
                  (set! buttons-remaining (rest buttons-remaining))
                  next-button)))
          (define #,tr-id tix)
-         (define btn (allocate-button)) ...)]
+         #,@button-definitions)]
     [stx
      (raise-syntax-error 'define-game "Bad game schema" #'stx)]))
 
@@ -117,6 +119,16 @@
               btn-stx-list)
     (when (> (length btn-stx-list) button-length)
       (wrong-syntax (list-ref btn-stx-list button-length) "Excess button"))))
+
+;; prefix-button-id : Id -> Id
+;; Prefixes the given identifier with "button:"
+(define-for-syntax (prefix-button-id button)
+  (string->symbol (string-append "button:" (symbol->string button))))
+
+;; create-button-ids : Id -> Sexpr
+;; Create Sexpr for the button definition
+(define-for-syntax (create-button-definition button)
+  `(define ,button (allocate-button)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CHARACTER SCHEMA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
