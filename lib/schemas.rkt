@@ -1,9 +1,6 @@
 #lang racket
 
-(provide #;(rename-out [yomi-module #%module-begin])
-         #;(except-out (all-from-out racket)
-                     #%module-begin)
-         define-game
+(provide define-game
          define-character
          define-combo
          using-game
@@ -62,22 +59,6 @@
 ;; hardcoded due to phasing conflict
 (define-for-syntax button-length 8)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; MODULE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define-syntax yomi-module
-  (syntax-parser
-    ;; File contains game schema definition
-    [(_ (~and game-schema ((~literal define-game) exprs ...)))
-     #'(#%plain-module-begin game-schema)]
-    ;; File requires game schema and contains character schema definition
-    [(_ (~and game-require ((~literal using-game) g))
-        (~and char-schema ((~literal define-character) name moves ...)))
-     #'(#%plain-module-begin game-require char-schema)]
-    ;; File requires character schema and contains combo definitions
-    [(_ (~and char-require ((~literal using-character) c))
-        (~and combos ((~literal define-combo) name move-exprs ...)))
-     #'(#%plain-module-begin char-require combos)]))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GAME SCHEMA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define-syntax define-game
@@ -103,7 +84,9 @@
                  (set! buttons-remaining (rest buttons-remaining))
                  next-button)))
          (define #,tr-id tix)
-         (define btn (allocate-button)) ...)]))
+         (define btn (allocate-button)) ...)]
+    [stx
+     (raise-syntax-error 'define-game "Bad game schema" #'stx)]))
 
 (define-syntax using-game
   (syntax-parser
@@ -139,22 +122,25 @@
 
 (define-syntax define-character
   (syntax-parser
-    [(_ name:id ((~literal move) move-name move-exprs ...) ...
+    [(_ name:id (~and full-move ((~literal move) move-name move-exprs ...)) ...
                 ((~literal alias) alias-name aliased-move) ...)
      (define tr-id (datum->syntax #'name tick-rate-id))
      (define move-names-set (list->set (stx-map syntax->datum #'(move-name ...))))
      (for-each (lambda (a)
-                 (unless (set-member? move-names-set a)
-                   (error 'alias "move not defined: ~a" a)))
-               (stx-map syntax->datum #'(aliased-move ...)))
+                 (let ([a-data (syntax->datum a)])
+                   (unless (set-member? move-names-set a-data)
+                     (raise-syntax-error 'alias "Move not defined" a))))
+               (syntax->list #'(aliased-move ...)))
      #`(begin
          (begin-for-syntax
            (if character-defined?
                (error 'character "Character schema already defined")
                (flip-character-defined)))
          (provide #,tr-id move-name ... alias-name ...)
-         (move move-name move-exprs ...) ...
-         (define alias-name aliased-move) ...)]))
+         full-move ...
+         (define alias-name aliased-move) ...)]
+    [stx
+     (raise-syntax-error 'define-character "Bad character schema" #'stx)]))
 
 (define-syntax using-character
   (syntax-parser
@@ -174,9 +160,9 @@
     [(_ mv:id startup:nat active:nat hitstun:nat recovery:nat)
      (define move-lambda (make-move-thunk #'mv))
      (define move-lambda-scoped (datum->syntax #'mv move-lambda))
-     #`(define mv (make-move #,move-lambda-scoped startup active hitstun recovery))]))
-
-
+     #`(define mv (make-move #,move-lambda-scoped startup active hitstun recovery))]
+    [stx
+     (raise-syntax-error 'move "Bad move syntax" #'stx)]))
 
 ;; make-move-thunk : String -> Sexpr
 ;; Takes a move's string form and produces a thunk with the proper presses/holds
