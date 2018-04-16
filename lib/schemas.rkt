@@ -67,7 +67,7 @@
     [(_ name:id
         [buttons btn:id ...]
         [tick-rate tix])
-     #:with (new-btn ...) (stx-map prefix-button-id #'(btn ...))
+     #:with (prefixed-btn ...) (stx-map prefix-button-id #'(btn ...))
      (define btn-list (syntax->list #'(btn ...)))
      (validate-buttons btn-list)
      (define tr-id (datum->syntax #'name tick-rate-id))
@@ -76,7 +76,7 @@
            (if game-defined?
                (error 'game "Game schema already defined")
                (flip-game-defined)))
-         (provide #,tr-id new-btn ...)
+         (provide #,tr-id prefixed-btn ...)
          (define buttons-remaining '(b1 b2 b3 b4 b5 b6 b7 b8))
          (define (allocate-button)
            (if (empty? buttons-remaining)
@@ -85,7 +85,7 @@
                  (set! buttons-remaining (rest buttons-remaining))
                  next-button)))
          (define #,tr-id tix)
-         (define new-btn (allocate-button)) ...)]
+         (define prefixed-btn (allocate-button)) ...)]
     [stx
      (raise-syntax-error 'define-game "Bad game schema" #'stx)]))
 
