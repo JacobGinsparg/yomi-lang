@@ -1,10 +1,13 @@
 #lang racket
 
 (require "../../lib/yomi-lang.rkt")
-(using-game "schema-skullgirls.rkt")
 
+; Game
+(define-game skullgirls
+  [buttons LP MP HP LK MK HK]
+  [tick-rate 60])
 
-; Filia character schema
+; Character
 (define-character filia
   ; normals
   
@@ -69,3 +72,6 @@
   (alias gregor 214MK+HK)
   (alias tricobezoar 214MP+HP)
   (alias throw LP+LK))
+
+; Combos
+(define-combo basic-launcher LP ~ LP ~ LK ~ MP ~ HP)
