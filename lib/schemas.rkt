@@ -146,9 +146,10 @@
      (define tr-id (datum->syntax #'name tick-rate-id))
      (define move-names-set (list->set (stx-map syntax->datum #'(move-name ...))))
      (for-each (lambda (a)
-                 (unless (set-member? move-names-set a)
-                   (error 'alias "move not defined: ~a" a)))
-               (stx-map syntax->datum #'(aliased-move ...)))
+                 (let ([a-data (syntax->datum a)])
+                   (unless (set-member? move-names-set a-data)
+                     (raise-syntax-error 'alias "Move not defined" a))))
+               (syntax->list #'(aliased-move ...)))
      #`(begin
          (begin-for-syntax
            (if character-defined?
@@ -181,8 +182,6 @@
      #`(define mv (make-move #,move-lambda-scoped startup active hitstun recovery))]
     [stx
      (raise-syntax-error 'move "Bad move syntax" #'stx)]))
-
-
 
 ;; make-move-thunk : String -> Sexpr
 ;; Takes a move's string form and produces a thunk with the proper presses/holds
