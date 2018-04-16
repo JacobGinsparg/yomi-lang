@@ -8,7 +8,9 @@
          buttons
          tick-rate
          move
-         ~ &)
+         ~ &
+
+         (all-from-out racket))
 
 (require "./yomi-lib.rkt"
          (for-syntax syntax/parse
