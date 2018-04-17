@@ -20,7 +20,7 @@ Once everything is set up, run `make drracket` to launch DrRacket with the corre
 
 ## Key bindings
 
-You will need to make sure that your game's controls are bound to the keys used by Yomi. Yomi will bind the following keys to the buttons specified in the game schema in the order that the buttons appear:
+You will need to make sure that your game's controls are bound to the keys used by Yomi. Yomi will bind the following keys to the buttons specified in the game schema in the order that the buttons appear (left to right):
 ```
 Q W E R T Y U I
 ```
@@ -33,3 +33,15 @@ For example, the following game schema will bind button A to `Q`, button B to `W
 ```
 
 Arrow keys are used for directional inputs.
+
+
+## Performing combos
+
+The `perform` function takes a move or a combo as input and executes it via uinput. By default, there is no delay between calling the function and seeing the action performed; it will begin immediately. You may want to add a delay so you have time to switch windows from your code to the game. This can be done using `wait-before-perform`, a function that consumes consumes a number and adds a delay (in seconds) to every subsequent `perform` call.
+
+```racket
+(define-combo some-combo
+  ...)
+(wait-before-perform 3)
+(perform some-combo)  ; will wait 3 seconds before firing inputs
+```
