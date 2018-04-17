@@ -1,6 +1,4 @@
-#lang racket
-
-(require "../../lib/yomi-lang.rkt")
+#lang s-exp "../../lib/yomi-lang.rkt"
 
 ; Game
 (define-game skullgirls
