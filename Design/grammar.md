@@ -1,22 +1,26 @@
 Grammar
 -------
 
-    Prefix ::= <Symbol>.
+Note that the grammar includes the use of angle brackets, which are normally
+used in BNFs to refer to other rules and types. To avoid confusion, we are
+using curly braces to refer to rules/types.
 
-    Direction ::= <1-9>
+    Prefix ::= {Symbol}.
 
-    DirectionSeq ::= <Direction>[(<Nat>)]
-                   | <Direction>[(<Nat>)]<DirectionSeq>
+    Direction ::= {1-9}
 
-    Button ::= <Symbol>
+    DirectionSeq ::= {Direction}[<{Nat}>]
+                   | {Direction}[<{Nat}>]{DirectionSeq}
 
-    ButtonSeq ::= <Button>[(<Nat>)]
-                | <Button>+<ButtonSeq>
+    Button ::= {Symbol}
 
-    Move ::= [<Prefix>][<DirectionSeq>]<ButtonSeq>
+    ButtonSeq ::= {Button}[<{Nat}>]
+                | {Button}+{ButtonSeq}
 
-    ComboSeq ::= <DirectionSeq> [<ComboSeq>]
-               | <Move> [<LinkOrCancel> <ComboSeq>]
+    Move ::= [{Prefix}][{DirectionSeq}]{ButtonSeq}
 
-    LinkOrCancel ::= ,
-                   | >
+    ComboSeq ::= {DirectionSeq} [{ComboSeq}]
+               | {Move} [{LinkOrCancel} {ComboSeq}]
+
+    LinkOrCancel ::= &
+                   | ~

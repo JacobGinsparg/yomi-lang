@@ -25,9 +25,9 @@ A _game schema_ is a namespace that defines buttons for a specific game. Moves a
 
 A _character schema_ is a namespace that defines moves and names for a specific character in a specific game. A character schema must be within the scope of a game schema.
 
-A _link_ is when a move is performed after the previous move's recovery state completes. We infer that the move should be performed on the first frame after recovery. In our grammar, a link is specified by the `,` character.
+A _link_ is when a move is performed after the previous move's recovery state completes. We infer that the move should be performed on the first frame after recovery. In our grammar, a link is specified by the `&` character.
 
-A _cancel_ is when a move is performed after the previous move's active state completes, but is still in recovery. We infer that the move should be performed on the first frame of recovery. In our grammar, a cancel is specified by the `>` character.
+A _cancel_ is when a move is performed after the previous move's active state completes, but is still in recovery. We infer that the move should be performed on the first frame of recovery. In our grammar, a cancel is specified by the `~` character.
 
 
 Anatomy of a move
@@ -44,5 +44,5 @@ The _button sequence_ is a combination of buttons that will be performed simulta
 Some example moves:
 - `j.236K`: Assumed to be in the air, input directions down, down-forward, and forward, then press the K button
 - `623HP+HK`: Input directions forward, down, and down-forward, then press the HP and HP buttons simultaneously
-- `4(30)6HP`: Input direction back for 30 frames, then input direction forward and press the HP buton
+- `4<30>6HP`: Input direction back for 30 frames, then input direction forward and press the HP buton
 - `j.HK`: Assumed to be in the air, press the HK button (no direction, equivalent to "j.5HK")
