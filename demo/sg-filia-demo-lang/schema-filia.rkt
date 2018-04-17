@@ -1,8 +1,6 @@
-#lang racket
+#lang s-exp "../../lib/yomi-lang.rkt"
 
-(require "../../lib/yomi-lang.rkt")
 (using-game "schema-skullgirls.rkt")
-
 
 ; Filia character schema
 (define-character filia

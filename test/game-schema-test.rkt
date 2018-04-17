@@ -12,12 +12,12 @@
 
 (test-case
  "declaring buttons"
- (check-equal? (list LP
-                     MP
-                     HP
-                     LK
-                     MK
-                     HK)
+ (check-equal? (list button:LP
+                     button:MP
+                     button:HP
+                     button:LK
+                     button:MK
+                     button:HK)
                '(b1 b2 b3 b4 b5 b6)))
 
 (test-case
